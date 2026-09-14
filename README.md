@@ -1,21 +1,103 @@
-## TemplateDevEnv
-_For Kotlin see [TemplateDevEnvKt](https://github.com/CleanroomMC/TemplateDevEnvKt)_
+# Tinkers' Schema
 
-Template workspace for modding Minecraft 1.12.2. Licensed under MIT, it is made for public use.
+A data-driven tool registration framework for **Tinkers' Construct 2** on Minecraft 1.12.2. Define custom melee weapons and harvest tools entirely through JSON — no Java code required.
 
-This template runs on **Java 25**, **Gradle 9.7.0** + **[RetroFuturaGradle](https://github.com/GTNewHorizons/RetroFuturaGradle) 2.0.3** + **Forge 14.23.5.2847**.
+## What It Does
 
-With **coremod and mixin support** that is easy to configure.
+- Registers new tools into the Tinkers' Construct tool system
+- Each tool is defined by a single JSON file in `config/tinkersschema/tools/`
+- Supports custom parts, stats, traits, GUI layouts, and crafting station routing (Tool Station / Tool Forge)
+- All tools behave as first-class Tinkers' items: craftable in the Tool Station, repairable, modifiable, and compatible with existing materials
+- Existing Tinkers' Construct content is never modified — the mod only adds new entries
 
-### Instructions:
+## Recommended Companions
 
-1. Click `use this template` at the top.
-2. Clone the repository that you have created with this template to your local machine.
-3. Make sure IDEA is using Java 25 for Gradle before you sync the project. Verify this by going to IDEA's `Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM`.
-4. Open the project folder in IDEA. When prompted, click "Load Gradle Project" as it detects the `build.gradle`, if you weren't prompted, right-click the project's `build.gradle` in IDEA, select `Link Gradle Project`, after completion, hit `Refresh All` in the gradle tab on the right.
-5. Run gradle tasks such as `runClient` and `runServer` in the IDEA gradle tab, or use the auto-imported run configurations like `1. Run Client`.
+| Mod | Purpose |
+|---|---|
+| [Resource Loader](https://www.curseforge.com/minecraft/mc-mods/resource-loader) | Load custom models, textures, and language files without packaging a resource pack |
 
-### Notes:
-- Dependencies script in [gradle/scripts/dependencies.gradle](gradle/scripts/dependencies.gradle), explanations are commented in the file.
-- Publishing script in [gradle/scripts/publishing.gradle](gradle/scripts/publishing.gradle).
-- When writing Mixins on IntelliJ, it is advisable to use latest [MinecraftDev Fork for RetroFuturaGradle](https://github.com/eigenraven/MinecraftDev/releases).
+## Current Scope
+
+Phase 1 supports two base tool types:
+
+| `tooltype` | Base Class | Use Case |
+|---|---|---|
+| `sword` | `SwordCore` | Melee weapons |
+| `aoe` | `AoeToolCore` | Harvest tools with area-of-effect mining |
+
+## File Layout
+
+```
+.minecraft/
+├── config/
+│   └── tinkersschema/
+│       └── tools/
+│           └── <tool_name>.json
+└── resources/
+    └── tinkersschema/
+        ├── lang/
+        ├── models/item/tools/
+        └── textures/items/tools/
+```
+
+## JSON Format
+
+```json
+{
+  "id": "namespace:tool_name",
+  "tooltype": "sword",
+  "station": "table",
+  "categories": ["WEAPON"],
+  "traits": ["splintering"],
+  "repairParts": [1, 2],
+  "repairModifiers": { "1": 1.5, "2": 1.5 },
+  "parts": [
+    { "type": "handle", "item": "tconstruct:tool_rod" },
+    { "type": "head",   "item": "tconstruct:bow_limb" },
+    { "type": "head",   "item": "tconstruct:bow_limb" }
+  ],
+  "guiSlots": ["center", "topright", "bottomleft"],
+  "stats": {
+    "damagePotential": 0.9,
+    "attackSpeed": 1.6,
+    "knockback": 1.1,
+    "bonusAttack": 0.5,
+    "attackMultiplier": 1.1,
+    "durabilityMultiplier": 1.2,
+    "damageCutoff": 15.0,
+    "repairModifier": 1.0
+  }
+}
+```
+
+### Key Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `id` | Yes | Registry name (`namespace:path`) |
+| `tooltype` | Yes | `sword` or `aoe` |
+| `parts` | Yes | Ordered list of tool parts |
+| `station` | No | `table` (default) or `forge` |
+| `categories` | No | `WEAPON`, `HARVEST` |
+| `traits` | No | Intrinsic trait IDs |
+| `guiSlots` | No | Slot positions (`topleft`, `center`, etc.) or `"x,y"` coordinates |
+| `stats` | No | All numeric values default to sensible baselines |
+
+## Assets
+
+Models and textures follow the standard resource pack layout. Each tool requires:
+
+- `models/item/tools/<tool_name>.tcon.json` — layered tool model
+- `textures/items/tools/<tool_name>/<layer>.png` — grayscale layer textures (16×16)
+- `lang/<locale>.lang` — tool name and description
+
+Textures are grayscale; Tinkers' Construct applies material colors at render time.
+
+## Roadmap
+
+- **Phase 2**: Additional tool types (ranged weapons, thrown weapons, armor)
+- **Phase 3**: Custom tool part registration via JSON — currently only vanilla Tinkers' parts can be used
+
+## License
+
+MIT (mod code). ForgeDevEnv template by CleanroomMC retains its own MIT license.
