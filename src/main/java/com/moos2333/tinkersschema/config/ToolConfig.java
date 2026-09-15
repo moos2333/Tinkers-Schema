@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class ToolConfig {
 
+    private static final StatsConfig DEFAULT_STATS = new StatsConfig();
+
     private String id;
     private String tooltype;
     private String station = "table";
@@ -26,7 +28,7 @@ public class ToolConfig {
 
     public String getId() { return id; }
     public String getTooltype() { return tooltype; }
-    public String getStation() { return station; }
+    public String getStation() { return station != null ? station : "table"; }
     public List<String> getCategories() { return categories; }
     public List<PartConfig> getParts() { return parts; }
     public List<String> getEffectiveMaterials() { return effectiveMaterials; }
@@ -36,7 +38,7 @@ public class ToolConfig {
     public int[] getRepairParts() { return repairParts; }
     public Map<String, Float> getRepairModifiers() { return repairModifiers; }
     public int[] getAoeRange() { return aoeRange; }
-    public StatsConfig getStats() { return stats; }
+    public StatsConfig getStats() { return stats != null ? stats : DEFAULT_STATS; }
 
     public ResourceLocation getResourceLocation() {
         if (cachedLocation == null) {
