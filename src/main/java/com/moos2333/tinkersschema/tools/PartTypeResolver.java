@@ -7,20 +7,25 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tools.IToolPart;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.function.Function;
 
 public final class PartTypeResolver {
 
-    private static final Map<String, Function<IToolPart, PartMaterialType>> FACTORIES = new HashMap<>();
+    private static final Map<String, String[]> TYPES = new HashMap<>();
 
     static {
-        FACTORIES.put("head", PartMaterialType::head);
-        FACTORIES.put("handle", PartMaterialType::handle);
-        FACTORIES.put("extra", PartMaterialType::extra);
+        TYPES.put("head",       new String[]{"head"});
+        TYPES.put("handle",     new String[]{"handle"});
+        TYPES.put("extra",      new String[]{"extra"});
+        TYPES.put("bowlimb",    new String[]{"bow", "head"});
+        TYPES.put("bowstring",  new String[]{"bowstring"});
+        TYPES.put("arrowhead",  new String[]{"head", "projectile"});
+        TYPES.put("arrowshaft", new String[]{"shaft"});
+        TYPES.put("fletching",  new String[]{"fletching"});
     }
 
     private PartTypeResolver() {
@@ -34,17 +39,65 @@ public final class PartTypeResolver {
         return types;
     }
 
+    public static boolean usesStat(String type, String statId) {
+        if (type == null || type.isEmpty()) return false;
+        if (type.indexOf(',') < 0) {
+            String key = type.trim().toLowerCase(Locale.ROOT);
+            String[] predefined = TYPES.get(key);
+            if (predefined != null) {
+                for (String id : predefined) {
+                    if (id.equals(statId)) return true;
+                }
+                return false;
+            }
+            return key.equals(statId);
+        }
+        for (String raw : type.toLowerCase(Locale.ROOT).split(",")) {
+            String key = raw.trim();
+            if (key.isEmpty()) continue;
+            String[] predefined = TYPES.get(key);
+            if (predefined != null) {
+                for (String id : predefined) {
+                    if (id.equals(statId)) return true;
+                }
+            } else if (key.equals(statId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static PartMaterialType resolve(ToolConfig.PartConfig config) {
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(config.getItem()));
-        if (item == null) {
-            throw new IllegalArgumentException("Unknown part item: " + config.getItem());
+        String itemName = config.getItem();
+        if (itemName == null) {
+            throw new IllegalArgumentException("Part item is null");
         }
+        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
         if (!(item instanceof IToolPart)) {
-            throw new IllegalArgumentException("Item is not a Tinkers' tool part: " + config.getItem());
+            throw new IllegalArgumentException("Not a Tinkers' tool part: " + itemName);
         }
-        IToolPart part = (IToolPart) item;
-        String type = config.getType().toLowerCase(Locale.ROOT);
-        Function<IToolPart, PartMaterialType> factory = FACTORIES.get(type);
-        return factory != null ? factory.apply(part) : new PartMaterialType(part, type);
+        String[] statIds = expand(config.getType());
+        if (statIds.length == 0) {
+            throw new IllegalArgumentException("Part type resolves to no stat IDs: '" + config.getType() + "' for " + itemName);
+        }
+        return new PartMaterialType((IToolPart) item, statIds);
+    }
+
+    private static String[] expand(String type) {
+        if (type == null || type.isEmpty()) return new String[0];
+        List<String> statIds = new ArrayList<>(2);
+        for (String raw : type.toLowerCase(Locale.ROOT).split(",")) {
+            String key = raw.trim();
+            if (key.isEmpty()) continue;
+            String[] predefined = TYPES.get(key);
+            if (predefined != null) {
+                for (String id : predefined) {
+                    if (!statIds.contains(id)) statIds.add(id);
+                }
+            } else if (!statIds.contains(key)) {
+                statIds.add(key);
+            }
+        }
+        return statIds.toArray(new String[0]);
     }
 }

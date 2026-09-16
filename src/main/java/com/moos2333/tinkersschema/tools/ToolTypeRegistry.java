@@ -15,6 +15,7 @@ public final class ToolTypeRegistry {
     static {
         register("sword", DynamicSword::new);
         register("harvest", DynamicAoeTool::new);
+        register("bow", DynamicBow::new);
     }
 
     private ToolTypeRegistry() {

@@ -9,7 +9,6 @@ import slimeknights.tconstruct.library.tools.ToolNBT;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public final class ToolNbtBuilder {
 
@@ -24,12 +23,16 @@ public final class ToolNbtBuilder {
         List<ToolConfig.PartConfig> parts = config.getParts();
         int size = Math.min(parts.size(), materials.size());
         for (int i = 0; i < size; i++) {
-            String type = parts.get(i).getType().toLowerCase(Locale.ROOT);
+            String type = parts.get(i).getType();
             Material material = materials.get(i);
-            switch (type) {
-                case "head":   heads.add(material.getStatsOrUnknown("head"));     break;
-                case "handle": handles.add(material.getStatsOrUnknown("handle")); break;
-                case "extra":  extras.add(material.getStatsOrUnknown("extra"));   break;
+            if (PartTypeResolver.usesStat(type, "head")) {
+                heads.add(material.getStatsOrUnknown("head"));
+            }
+            if (PartTypeResolver.usesStat(type, "handle")) {
+                handles.add(material.getStatsOrUnknown("handle"));
+            }
+            if (PartTypeResolver.usesStat(type, "extra")) {
+                extras.add(material.getStatsOrUnknown("extra"));
             }
         }
 

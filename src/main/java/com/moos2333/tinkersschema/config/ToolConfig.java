@@ -73,6 +73,10 @@ public class ToolConfig {
         private float repairModifier = 1.0f;
         private float miningSpeedModifier = 1.0f;
         private float damageCutoff = 15.0f;
+        private float drawSpeedMultiplier = 1.0f;
+        private float rangeMultiplier = 1.0f;
+        private float projectileDamageMultiplier = 1.0f;
+        private Float drawMoveSpeed;
 
         public float getDamagePotential() { return damagePotential; }
         public double getAttackSpeed() { return attackSpeed; }
@@ -83,5 +87,9 @@ public class ToolConfig {
         public float getRepairModifier() { return repairModifier; }
         public float getMiningSpeedModifier() { return miningSpeedModifier; }
         public float getDamageCutoff() { return damageCutoff; }
+        public float getDrawSpeedMultiplier() { return drawSpeedMultiplier; }
+        public float getRangeMultiplier() { return rangeMultiplier; }
+        public float getProjectileDamageMultiplier() { return projectileDamageMultiplier; }
+        public Float getDrawMoveSpeed() { return drawMoveSpeed; }
     }
 }
