@@ -57,10 +57,10 @@ public class DynamicBow extends BowCore implements DynamicTool {
     public float miningSpeedModifier() { return config.getStats().getMiningSpeedModifier(); }
 
     @Override
-    public float baseProjectileDamage() { return 0.0f; }
+    public float baseProjectileDamage() { return config.getStats().getBaseProjectileDamage(); }
 
     @Override
-    public float projectileDamageModifier() { return 1.0f; }
+    public float projectileDamageModifier() { return config.getStats().getProjectileDamageModifier(); }
 
     @Override
     protected List<Item> getAmmoItems() {
