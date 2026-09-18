@@ -75,7 +75,7 @@ public class ToolConfig {
         private float damageCutoff = 15.0f;
         private float drawSpeedMultiplier = 1.0f;
         private float rangeMultiplier = 1.0f;
-        private float projectileDamageMultiplier = 1.0f;
+        private float bonusDamageMultiplier = 1.0f;
         private float baseProjectileDamage = 0.0f;
         private float projectileDamageModifier = 1.0f;
         private float baseInaccuracy = 0.0f;
@@ -93,7 +93,7 @@ public class ToolConfig {
         public float getDamageCutoff() { return damageCutoff; }
         public float getDrawSpeedMultiplier() { return drawSpeedMultiplier; }
         public float getRangeMultiplier() { return rangeMultiplier; }
-        public float getProjectileDamageMultiplier() { return projectileDamageMultiplier; }
+        public float getBonusDamageMultiplier() { return bonusDamageMultiplier; }
         public float getBaseProjectileDamage() { return baseProjectileDamage; }
         public float getProjectileDamageModifier() { return projectileDamageModifier; }
         public float getBaseInaccuracy() { return baseInaccuracy; }

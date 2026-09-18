@@ -135,7 +135,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
         ToolConfig.StatsConfig stats = config.getStats();
         data.drawSpeed   = Math.max(0.001f, data.drawSpeed * stats.getDrawSpeedMultiplier());
         data.range       = Math.max(0.001f, data.range * stats.getRangeMultiplier());
-        data.bonusDamage = data.bonusDamage * stats.getProjectileDamageMultiplier();
+        data.bonusDamage = data.bonusDamage * stats.getBonusDamageMultiplier();
 
         data.attack     *= stats.getAttackMultiplier();
         data.attack     += stats.getBonusAttack();
