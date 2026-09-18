@@ -43,5 +43,6 @@ public class TinkersSchema {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         TraitApplier.markReady();
+        proxy.registerBookPages();
     }
 }

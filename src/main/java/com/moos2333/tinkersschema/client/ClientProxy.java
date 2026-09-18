@@ -1,10 +1,13 @@
 package com.moos2333.tinkersschema.client;
 
+import com.moos2333.tinkersschema.Tags;
 import com.moos2333.tinkersschema.common.CommonProxy;
 import com.moos2333.tinkersschema.config.ToolConfig;
 import com.moos2333.tinkersschema.tools.DynamicTool;
 import com.moos2333.tinkersschema.tools.DynamicToolRegister;
+import slimeknights.mantle.client.book.repository.FileRepository;
 import slimeknights.tconstruct.library.TinkerRegistryClient;
+import slimeknights.tconstruct.library.book.TinkerBook;
 import slimeknights.tconstruct.library.client.ToolBuildGuiInfo;
 import slimeknights.tconstruct.library.tools.ToolCore;
 
@@ -38,5 +41,10 @@ public class ClientProxy extends CommonProxy {
             }
             TinkerRegistryClient.addToolBuilding(info);
         }
+    }
+
+    @Override
+    public void registerBookPages() {
+        TinkerBook.INSTANCE.addRepository(new FileRepository(Tags.MOD_ID + ":book"));
     }
 }
