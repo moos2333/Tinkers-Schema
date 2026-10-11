@@ -19,6 +19,7 @@ public class ToolConfig {
     private String harvestToolClass;
     private List<String> guiSlots;
     private List<String> traits;
+    private Map<String, String> traitColors;
     private int[] repairParts;
     private Map<String, Float> repairModifiers;
     private int[] aoeRange;
@@ -35,6 +36,7 @@ public class ToolConfig {
     public String getHarvestToolClass() { return harvestToolClass; }
     public List<String> getGuiSlots() { return guiSlots; }
     public List<String> getTraits() { return traits; }
+    public Map<String, String> getTraitColors() { return traitColors; }
     public int[] getRepairParts() { return repairParts; }
     public Map<String, Float> getRepairModifiers() { return repairModifiers; }
     public int[] getAoeRange() { return aoeRange; }
