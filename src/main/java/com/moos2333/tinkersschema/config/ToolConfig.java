@@ -15,6 +15,7 @@ public class ToolConfig {
     private String station = "table";
     private List<String> categories;
     private List<PartConfig> parts;
+    private List<String> ammo;
     private List<String> effectiveMaterials;
     private String harvestToolClass;
     private List<String> guiSlots;
@@ -32,6 +33,7 @@ public class ToolConfig {
     public String getStation() { return station != null ? station : "table"; }
     public List<String> getCategories() { return categories; }
     public List<PartConfig> getParts() { return parts; }
+    public List<String> getAmmo() { return ammo; }
     public List<String> getEffectiveMaterials() { return effectiveMaterials; }
     public String getHarvestToolClass() { return harvestToolClass; }
     public List<String> getGuiSlots() { return guiSlots; }

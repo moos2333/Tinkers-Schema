@@ -1,17 +1,22 @@
 package com.moos2333.tinkersschema.tools;
 
+import com.moos2333.tinkersschema.TinkersSchema;
 import com.moos2333.tinkersschema.config.ToolConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import slimeknights.tconstruct.library.materials.BowMaterialStats;
 import slimeknights.tconstruct.library.materials.BowStringMaterialStats;
 import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tinkering.Category;
+import slimeknights.tconstruct.library.tools.ranged.IAmmo;
 import slimeknights.tconstruct.library.tools.ProjectileLauncherNBT;
 import slimeknights.tconstruct.library.tools.ranged.BowCore;
 import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
@@ -22,13 +27,39 @@ import java.util.List;
 public class DynamicBow extends BowCore implements DynamicTool {
 
     private final ToolConfig config;
+    private final List<Item> ammoItems;
 
     public DynamicBow(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
         this.config = config;
+        this.ammoItems = resolveAmmo(config.getAmmo());
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
         applyCategories(config.getCategories());
+    }
+
+    private static List<Item> resolveAmmo(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return TinkerRangedWeapons.getDiscoveredArrows();
+        }
+        List<Item> result = new ArrayList<>(ids.size());
+        for (String id : ids) {
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
+            if (item == null) {
+                TinkersSchema.LOGGER.warn("Unknown ammo item: {}", id);
+                continue;
+            }
+            if (!(item instanceof IAmmo) && !(item instanceof ItemArrow)) {
+                TinkersSchema.LOGGER.warn("Item '{}' is not a valid ammo type, skipping", id);
+                continue;
+            }
+            result.add(item);
+        }
+        if (result.isEmpty()) {
+            TinkersSchema.LOGGER.warn("No valid ammo entries, falling back to default arrows");
+            return TinkerRangedWeapons.getDiscoveredArrows();
+        }
+        return result;
     }
 
     private void applyCategories(List<String> categories) {
@@ -70,7 +101,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
 
     @Override
     protected List<Item> getAmmoItems() {
-        return TinkerRangedWeapons.getDiscoveredArrows();
+        return ammoItems;
     }
 
     @Override
