@@ -16,9 +16,9 @@ import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tinkering.Category;
-import slimeknights.tconstruct.library.tools.ranged.IAmmo;
 import slimeknights.tconstruct.library.tools.ProjectileLauncherNBT;
 import slimeknights.tconstruct.library.tools.ranged.BowCore;
+import slimeknights.tconstruct.library.tools.ranged.IAmmo;
 import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
 
 import java.util.ArrayList;
@@ -39,9 +39,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
     }
 
     private static List<Item> resolveAmmo(List<String> ids) {
-        if (ids == null || ids.isEmpty()) {
-            return TinkerRangedWeapons.getDiscoveredArrows();
-        }
+        if (ids == null || ids.isEmpty()) return null;
         List<Item> result = new ArrayList<>(ids.size());
         for (String id : ids) {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
@@ -57,7 +55,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
         }
         if (result.isEmpty()) {
             TinkersSchema.LOGGER.warn("No valid ammo entries, falling back to default arrows");
-            return TinkerRangedWeapons.getDiscoveredArrows();
+            return null;
         }
         return result;
     }
@@ -101,7 +99,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
 
     @Override
     protected List<Item> getAmmoItems() {
-        return ammoItems;
+        return ammoItems != null ? ammoItems : TinkerRangedWeapons.getDiscoveredArrows();
     }
 
     @Override
