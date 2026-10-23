@@ -15,7 +15,6 @@ import slimeknights.tconstruct.library.materials.BowStringMaterialStats;
 import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
-import slimeknights.tconstruct.library.tinkering.Category;
 import slimeknights.tconstruct.library.tools.ProjectileLauncherNBT;
 import slimeknights.tconstruct.library.tools.ranged.BowCore;
 import slimeknights.tconstruct.library.tools.ranged.IAmmo;
@@ -35,7 +34,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
         this.ammoItems = resolveAmmo(config.getAmmo());
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
-        applyCategories(config.getCategories());
+        addCategory(resolveCategories());
     }
 
     private static List<Item> resolveAmmo(List<String> ids) {
@@ -58,13 +57,6 @@ public class DynamicBow extends BowCore implements DynamicTool {
             return null;
         }
         return result;
-    }
-
-    private void applyCategories(List<String> categories) {
-        if (categories == null) return;
-        for (String cat : categories) {
-            if ("WEAPON".equalsIgnoreCase(cat)) addCategory(Category.WEAPON);
-        }
     }
 
     @Override
@@ -104,16 +96,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
 
     @Override
     public int[] getRepairParts() {
-        int[] parts = config.getRepairParts();
-        return parts != null ? parts : new int[]{0, 1};
-    }
-
-    @Override
-    public float getRepairModifierForPart(int index) {
-        Float modifier = config.getRepairModifiers() != null
-                ? config.getRepairModifiers().get(String.valueOf(index))
-                : null;
-        return modifier != null ? modifier : config.getStats().getRepairModifier();
+        return getRepairParts(new int[]{0, 1});
     }
 
     @Override
@@ -169,6 +152,8 @@ public class DynamicBow extends BowCore implements DynamicTool {
         data.attack     *= stats.getAttackMultiplier();
         data.attack     += stats.getBonusAttack();
         data.durability *= stats.getDurabilityMultiplier();
+
+        applyModifiers(data);
         return data;
     }
 }

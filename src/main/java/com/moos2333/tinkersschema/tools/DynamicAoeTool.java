@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import slimeknights.tconstruct.library.materials.Material;
-import slimeknights.tconstruct.library.tinkering.Category;
 import slimeknights.tconstruct.library.tools.AoeToolCore;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 import slimeknights.tconstruct.library.utils.ToolHelper;
@@ -29,17 +28,9 @@ public class DynamicAoeTool extends AoeToolCore implements DynamicTool {
         this.effectiveMaterials = MaterialResolver.resolve(config.getEffectiveMaterials());
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
-        applyCategories(config.getCategories());
+        addCategory(resolveCategories());
         if (config.getHarvestToolClass() != null) {
             setHarvestLevel(config.getHarvestToolClass(), 0);
-        }
-    }
-
-    private void applyCategories(List<String> categories) {
-        if (categories == null) return;
-        for (String cat : categories) {
-            if ("WEAPON".equalsIgnoreCase(cat)) addCategory(Category.WEAPON);
-            else if ("HARVEST".equalsIgnoreCase(cat)) addCategory(Category.HARVEST);
         }
     }
 
@@ -77,16 +68,7 @@ public class DynamicAoeTool extends AoeToolCore implements DynamicTool {
 
     @Override
     public int[] getRepairParts() {
-        int[] parts = config.getRepairParts();
-        return parts != null ? parts : new int[]{1};
-    }
-
-    @Override
-    public float getRepairModifierForPart(int index) {
-        Float modifier = config.getRepairModifiers() != null
-                ? config.getRepairModifiers().get(String.valueOf(index))
-                : null;
-        return modifier != null ? modifier : config.getStats().getRepairModifier();
+        return getRepairParts(new int[]{1});
     }
 
     @Override
@@ -97,6 +79,8 @@ public class DynamicAoeTool extends AoeToolCore implements DynamicTool {
 
     @Override
     protected ToolNBT buildTagData(List<Material> materials) {
-        return ToolNbtBuilder.build(config, materials);
+        ToolNBT data = ToolNbtBuilder.build(config, materials);
+        applyModifiers(data);
+        return data;
     }
 }

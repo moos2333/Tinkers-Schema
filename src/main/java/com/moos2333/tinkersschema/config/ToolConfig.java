@@ -24,6 +24,7 @@ public class ToolConfig {
     private int[] repairParts;
     private Map<String, Float> repairModifiers;
     private int[] aoeRange;
+    private Integer modifiers;
     private StatsConfig stats = new StatsConfig();
 
     private transient ResourceLocation cachedLocation;
@@ -42,6 +43,7 @@ public class ToolConfig {
     public int[] getRepairParts() { return repairParts; }
     public Map<String, Float> getRepairModifiers() { return repairModifiers; }
     public int[] getAoeRange() { return aoeRange; }
+    public Integer getModifiers() { return modifiers; }
     public StatsConfig getStats() { return stats != null ? stats : DEFAULT_STATS; }
 
     public ResourceLocation getResourceLocation() {

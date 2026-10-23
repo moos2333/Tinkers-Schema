@@ -3,7 +3,6 @@ package com.moos2333.tinkersschema.tools;
 import com.moos2333.tinkersschema.config.ToolConfig;
 import net.minecraft.nbt.NBTTagCompound;
 import slimeknights.tconstruct.library.materials.Material;
-import slimeknights.tconstruct.library.tinkering.Category;
 import slimeknights.tconstruct.library.tools.SwordCore;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 
@@ -18,15 +17,7 @@ public class DynamicSword extends SwordCore implements DynamicTool {
         this.config = config;
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
-        applyCategories(config.getCategories());
-    }
-
-    private void applyCategories(List<String> categories) {
-        if (categories == null) return;
-        for (String cat : categories) {
-            if ("WEAPON".equalsIgnoreCase(cat)) addCategory(Category.WEAPON);
-            else if ("HARVEST".equalsIgnoreCase(cat)) addCategory(Category.HARVEST);
-        }
+        addCategory(resolveCategories());
     }
 
     @Override
@@ -49,16 +40,7 @@ public class DynamicSword extends SwordCore implements DynamicTool {
 
     @Override
     public int[] getRepairParts() {
-        int[] parts = config.getRepairParts();
-        return parts != null ? parts : new int[]{1};
-    }
-
-    @Override
-    public float getRepairModifierForPart(int index) {
-        Float modifier = config.getRepairModifiers() != null
-                ? config.getRepairModifiers().get(String.valueOf(index))
-                : null;
-        return modifier != null ? modifier : config.getStats().getRepairModifier();
+        return getRepairParts(new int[]{1});
     }
 
     @Override
@@ -69,6 +51,8 @@ public class DynamicSword extends SwordCore implements DynamicTool {
 
     @Override
     protected ToolNBT buildTagData(List<Material> materials) {
-        return ToolNbtBuilder.build(config, materials);
+        ToolNBT data = ToolNbtBuilder.build(config, materials);
+        applyModifiers(data);
+        return data;
     }
 }
