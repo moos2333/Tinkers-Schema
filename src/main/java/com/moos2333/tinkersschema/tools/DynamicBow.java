@@ -27,11 +27,16 @@ public class DynamicBow extends BowCore implements DynamicTool {
 
     private final ToolConfig config;
     private final List<Item> ammoItems;
+    private final Float drawMoveSpeed;
+    private final float baseProjectileSpeed;
 
     public DynamicBow(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
         this.config = config;
         this.ammoItems = resolveAmmo(config.getAmmo());
+        this.drawMoveSpeed = config.getStats().getDrawMoveSpeed();
+        this.baseProjectileSpeed = 3.0f * config.getStats().getProjectileSpeedMultiplier();
+
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
         addCategory(resolveCategories());
@@ -87,7 +92,7 @@ public class DynamicBow extends BowCore implements DynamicTool {
     protected float baseInaccuracy() { return config.getStats().getBaseInaccuracy(); }
 
     @Override
-    protected float baseProjectileSpeed() { return 3.0f * config.getStats().getProjectileSpeedMultiplier(); }
+    protected float baseProjectileSpeed() { return baseProjectileSpeed; }
 
     @Override
     protected List<Item> getAmmoItems() {
@@ -101,9 +106,8 @@ public class DynamicBow extends BowCore implements DynamicTool {
 
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        Float moveSpeed = config.getStats().getDrawMoveSpeed();
-        if (moveSpeed != null) {
-            preventSlowDown(entityIn, moveSpeed);
+        if (drawMoveSpeed != null) {
+            preventSlowDown(entityIn, drawMoveSpeed);
         }
         super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
     }

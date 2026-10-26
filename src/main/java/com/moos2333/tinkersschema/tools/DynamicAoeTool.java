@@ -21,11 +21,16 @@ public class DynamicAoeTool extends AoeToolCore implements DynamicTool {
 
     private final ToolConfig config;
     private final Set<net.minecraft.block.material.Material> effectiveMaterials;
+    private final int[] aoeRange;
 
     public DynamicAoeTool(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
         this.config = config;
         this.effectiveMaterials = MaterialResolver.resolve(config.getEffectiveMaterials());
+
+        int[] range = config.getAoeRange();
+        this.aoeRange = (range != null && range.length >= 3) ? range : new int[]{1, 1, 1};
+
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
         addCategory(resolveCategories());
@@ -44,11 +49,7 @@ public class DynamicAoeTool extends AoeToolCore implements DynamicTool {
 
     @Override
     public ImmutableList<BlockPos> getAOEBlocks(ItemStack stack, World world, EntityPlayer player, BlockPos origin) {
-        int[] range = config.getAoeRange();
-        if (range == null || range.length < 3) {
-            range = new int[]{1, 1, 1};
-        }
-        return ToolHelper.calcAOEBlocks(stack, world, player, origin, range[0], range[1], range[2]);
+        return ToolHelper.calcAOEBlocks(stack, world, player, origin, aoeRange[0], aoeRange[1], aoeRange[2]);
     }
 
     @Override
