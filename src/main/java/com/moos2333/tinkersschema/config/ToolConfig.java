@@ -14,17 +14,23 @@ public class ToolConfig {
     private String tooltype;
     private String station = "table";
     private List<String> categories;
-    private List<PartConfig> parts;
-    private List<String> ammo;
-    private List<String> effectiveMaterials;
-    private String harvestToolClass;
     private List<String> guiSlots;
-    private List<String> traits;
-    private Map<String, String> traitColors;
+    private Integer modifiers;
+
+    private List<PartConfig> parts;
     private int[] repairParts;
     private Map<String, Float> repairModifiers;
+
+    private List<String> traits;
+    private Map<String, String> traitColors;
+
+    private List<String> effectiveMaterials;
+    private String harvestToolClass;
     private int[] aoeRange;
-    private Integer modifiers;
+
+    private List<String> ammo;
+    private String crosshair;
+
     private StatsConfig stats = new StatsConfig();
 
     private transient ResourceLocation cachedLocation;
@@ -33,17 +39,23 @@ public class ToolConfig {
     public String getTooltype() { return tooltype; }
     public String getStation() { return station != null ? station : "table"; }
     public List<String> getCategories() { return categories; }
-    public List<PartConfig> getParts() { return parts; }
-    public List<String> getAmmo() { return ammo; }
-    public List<String> getEffectiveMaterials() { return effectiveMaterials; }
-    public String getHarvestToolClass() { return harvestToolClass; }
     public List<String> getGuiSlots() { return guiSlots; }
-    public List<String> getTraits() { return traits; }
-    public Map<String, String> getTraitColors() { return traitColors; }
+    public Integer getModifiers() { return modifiers; }
+
+    public List<PartConfig> getParts() { return parts; }
     public int[] getRepairParts() { return repairParts; }
     public Map<String, Float> getRepairModifiers() { return repairModifiers; }
+
+    public List<String> getTraits() { return traits; }
+    public Map<String, String> getTraitColors() { return traitColors; }
+
+    public List<String> getEffectiveMaterials() { return effectiveMaterials; }
+    public String getHarvestToolClass() { return harvestToolClass; }
     public int[] getAoeRange() { return aoeRange; }
-    public Integer getModifiers() { return modifiers; }
+
+    public List<String> getAmmo() { return ammo; }
+    public String getCrosshair() { return crosshair; }
+
     public StatsConfig getStats() { return stats != null ? stats : DEFAULT_STATS; }
 
     public ResourceLocation getResourceLocation() {
@@ -79,6 +91,7 @@ public class ToolConfig {
         private float repairModifier = 1.0f;
         private float miningSpeedModifier = 1.0f;
         private float damageCutoff = 15.0f;
+
         private float drawSpeedMultiplier = 1.0f;
         private float rangeMultiplier = 1.0f;
         private float bonusDamageMultiplier = 1.0f;
@@ -97,6 +110,7 @@ public class ToolConfig {
         public float getRepairModifier() { return repairModifier; }
         public float getMiningSpeedModifier() { return miningSpeedModifier; }
         public float getDamageCutoff() { return damageCutoff; }
+
         public float getDrawSpeedMultiplier() { return drawSpeedMultiplier; }
         public float getRangeMultiplier() { return rangeMultiplier; }
         public float getBonusDamageMultiplier() { return bonusDamageMultiplier; }
