@@ -3,6 +3,7 @@ package com.moos2333.tinkersschema.tools;
 import com.moos2333.tinkersschema.TinkersSchema;
 import com.moos2333.tinkersschema.config.ToolConfig;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
@@ -10,6 +11,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import slimeknights.tconstruct.library.client.crosshair.Crosshairs;
+import slimeknights.tconstruct.library.client.crosshair.ICrosshair;
+import slimeknights.tconstruct.library.client.crosshair.ICustomCrosshairUser;
 import slimeknights.tconstruct.library.materials.BowMaterialStats;
 import slimeknights.tconstruct.library.materials.BowStringMaterialStats;
 import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
@@ -22,8 +28,9 @@ import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class DynamicBow extends BowCore implements DynamicTool {
+public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshairUser {
 
     private final ToolConfig config;
     private final List<Item> ammoItems;
@@ -159,5 +166,28 @@ public class DynamicBow extends BowCore implements DynamicTool {
 
         applyModifiers(data);
         return data;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public ICrosshair getCrosshair(ItemStack itemStack, EntityPlayer player) {
+        String type = config.getCrosshair();
+        if (type == null || type.isEmpty()) {
+            return Crosshairs.SQUARE;
+        }
+        switch (type.toUpperCase(Locale.ROOT)) {
+            case "X":       return Crosshairs.X;
+            case "INVERSE": return Crosshairs.INVERSE;
+            case "PLUS":    return Crosshairs.PLUS;
+            case "T":       return Crosshairs.T;
+            case "SQUARE":
+            default:        return Crosshairs.SQUARE;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public float getCrosshairState(ItemStack itemStack, EntityPlayer player) {
+        return getDrawbackProgress(itemStack, player);
     }
 }
