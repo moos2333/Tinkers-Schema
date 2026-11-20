@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,7 @@ public final class ToolConfigLoader {
         }
         File[] files = dir.listFiles((d, name) -> name.endsWith(".json"));
         if (files == null) return;
+        Arrays.sort(files);
         for (File file : files) {
             try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8)) {
                 ToolConfig config = GSON.fromJson(reader, ToolConfig.class);
@@ -48,13 +50,9 @@ public final class ToolConfigLoader {
 
     public static boolean addConfig(ToolConfig config) {
         if (config == null || !isValid(config)) return false;
-        if (!IDS.add(config.getId())) return false;
+        if (!IDS.add(config.getResourceLocation().toString())) return false;
         CONFIGS.add(config);
         return true;
-    }
-
-    public static ToolConfig parseJson(String json) {
-        return GSON.fromJson(json, ToolConfig.class);
     }
 
     private static boolean isValid(ToolConfig config) {

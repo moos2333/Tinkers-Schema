@@ -16,6 +16,8 @@ public final class ToolTypeRegistry {
         register("sword", DynamicSword::new);
         register("harvest", DynamicAoeTool::new);
         register("bow", DynamicBow::new);
+        register("thrown", DynamicThrown::new);
+        register("ammo", DynamicAmmo::new);
     }
 
     private ToolTypeRegistry() {

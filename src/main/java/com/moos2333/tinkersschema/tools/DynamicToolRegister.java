@@ -14,6 +14,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import slimeknights.tconstruct.common.ModelRegisterUtil;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.tools.ToolCore;
+import slimeknights.tconstruct.library.tools.ranged.IAmmo;
+import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +26,8 @@ public final class DynamicToolRegister {
 
     private static final List<ToolCore> DYNAMIC_TOOLS = new ArrayList<>();
 
+    private static List<Item> defaultAmmo;
+
     private DynamicToolRegister() {
     }
 
@@ -33,6 +37,10 @@ public final class DynamicToolRegister {
         if (configs.isEmpty()) return;
         for (ToolConfig config : configs) {
             try {
+                if (event.getRegistry().containsKey(config.getResourceLocation())) {
+                    TinkersSchema.LOGGER.warn("Skipped tool '{}': item id is already registered", config.getId());
+                    continue;
+                }
                 ToolCore tool = ToolTypeRegistry.create(config);
                 event.getRegistry().register(tool);
                 if ("forge".equalsIgnoreCase(config.getStation())) {
@@ -49,6 +57,21 @@ public final class DynamicToolRegister {
 
     public static List<ToolCore> getDynamicTools() {
         return Collections.unmodifiableList(DYNAMIC_TOOLS);
+    }
+
+    public static List<Item> getDefaultAmmo() {
+        List<Item> ammo = defaultAmmo;
+        if (ammo == null) {
+            List<Item> items = new ArrayList<>(TinkerRangedWeapons.getDiscoveredArrows());
+            for (ToolCore tool : DYNAMIC_TOOLS) {
+                if (tool instanceof IAmmo) {
+                    items.add(tool);
+                }
+            }
+            ammo = Collections.unmodifiableList(items);
+            defaultAmmo = ammo;
+        }
+        return ammo;
     }
 
     @SideOnly(Side.CLIENT)

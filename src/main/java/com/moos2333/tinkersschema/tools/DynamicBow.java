@@ -24,7 +24,6 @@ import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tools.ProjectileLauncherNBT;
 import slimeknights.tconstruct.library.tools.ranged.BowCore;
 import slimeknights.tconstruct.library.tools.ranged.IAmmo;
-import slimeknights.tconstruct.tools.ranged.TinkerRangedWeapons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,17 @@ import java.util.Locale;
 
 public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshairUser {
 
+    private static final int CROSSHAIR_SQUARE = 0;
+    private static final int CROSSHAIR_X = 1;
+    private static final int CROSSHAIR_INVERSE = 2;
+    private static final int CROSSHAIR_PLUS = 3;
+    private static final int CROSSHAIR_T = 4;
+
     private final ToolConfig config;
     private final List<Item> ammoItems;
     private final Float drawMoveSpeed;
     private final float baseProjectileSpeed;
+    private final int crosshairKind;
 
     public DynamicBow(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
@@ -43,6 +49,7 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
         this.ammoItems = resolveAmmo(config.getAmmo());
         this.drawMoveSpeed = config.getStats().getDrawMoveSpeed();
         this.baseProjectileSpeed = 3.0f * config.getStats().getProjectileSpeedMultiplier();
+        this.crosshairKind = resolveCrosshair(config.getCrosshair());
 
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
@@ -69,6 +76,17 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
             return null;
         }
         return result;
+    }
+
+    private static int resolveCrosshair(String type) {
+        if (type == null || type.isEmpty()) return CROSSHAIR_SQUARE;
+        switch (type.trim().toUpperCase(Locale.ROOT)) {
+            case "X":       return CROSSHAIR_X;
+            case "INVERSE": return CROSSHAIR_INVERSE;
+            case "PLUS":    return CROSSHAIR_PLUS;
+            case "T":       return CROSSHAIR_T;
+            default:        return CROSSHAIR_SQUARE;
+        }
     }
 
     @Override
@@ -103,7 +121,7 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
 
     @Override
     protected List<Item> getAmmoItems() {
-        return ammoItems != null ? ammoItems : TinkerRangedWeapons.getDiscoveredArrows();
+        return ammoItems != null ? ammoItems : DynamicToolRegister.getDefaultAmmo();
     }
 
     @Override
@@ -171,17 +189,12 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
     @SideOnly(Side.CLIENT)
     @Override
     public ICrosshair getCrosshair(ItemStack itemStack, EntityPlayer player) {
-        String type = config.getCrosshair();
-        if (type == null || type.isEmpty()) {
-            return Crosshairs.SQUARE;
-        }
-        switch (type.toUpperCase(Locale.ROOT)) {
-            case "X":       return Crosshairs.X;
-            case "INVERSE": return Crosshairs.INVERSE;
-            case "PLUS":    return Crosshairs.PLUS;
-            case "T":       return Crosshairs.T;
-            case "SQUARE":
-            default:        return Crosshairs.SQUARE;
+        switch (crosshairKind) {
+            case CROSSHAIR_X:       return Crosshairs.X;
+            case CROSSHAIR_INVERSE: return Crosshairs.INVERSE;
+            case CROSSHAIR_PLUS:    return Crosshairs.PLUS;
+            case CROSSHAIR_T:       return Crosshairs.T;
+            default:                return Crosshairs.SQUARE;
         }
     }
 

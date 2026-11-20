@@ -2,7 +2,6 @@ package com.moos2333.tinkersschema;
 
 import com.moos2333.tinkersschema.common.CommonProxy;
 import com.moos2333.tinkersschema.config.ToolConfigLoader;
-import com.moos2333.tinkersschema.tools.TraitApplier;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -42,7 +41,6 @@ public class TinkersSchema {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        TraitApplier.markReady();
         proxy.registerBookPages();
     }
 }

@@ -1,6 +1,6 @@
 # Tinkers' Schema
 
-A data-driven tool registration framework for **Tinkers' Construct 2** on Minecraft 1.12.2. Define custom melee weapons and harvest tools entirely through JSON — no Java code required.
+A data-driven tool registration framework for **Tinkers' Construct 2** on Minecraft 1.12.2. Define custom melee weapons, harvest tools, bows, throwing weapons and ammo entirely through JSON — no Java code required.
 
 ## What It Does
 
@@ -18,12 +18,13 @@ A data-driven tool registration framework for **Tinkers' Construct 2** on Minecr
 
 ## Current Scope
 
-Phase 1 supports two base tool types:
-
 | `tooltype` | Base Class | Use Case |
 |---|---|---|
 | `sword` | `SwordCore` | Melee weapons |
-| `aoe` | `AoeToolCore` | Harvest tools with area-of-effect mining |
+| `harvest` | `AoeToolCore` | Harvest tools with area-of-effect mining |
+| `bow` | `BowCore` | Bows |
+| `thrown` | `ProjectileCore` | Throwing weapons that spend their own durability as ammo |
+| `ammo` | `ProjectileCore` | Standalone ammo items consumed by launchers; cannot be thrown by hand |
 
 ## File Layout
 
@@ -75,28 +76,55 @@ Phase 1 supports two base tool types:
 | Field | Required | Description |
 |---|---|---|
 | `id` | Yes | Registry name (`namespace:path`) |
-| `tooltype` | Yes | `sword` or `aoe` |
+| `tooltype` | Yes | `sword`, `harvest`, `bow`, `thrown`, or `ammo` |
 | `parts` | Yes | Ordered list of tool parts |
 | `station` | No | `table` (default) or `forge` |
-| `categories` | No | `WEAPON`, `HARVEST` |
+| `categories` | No | Any of `TOOL`, `WEAPON`, `HARVEST`, `AOE`, `LAUNCHER`, `PROJECTILE`, `NO_MELEE` |
 | `traits` | No | Intrinsic trait IDs |
 | `guiSlots` | No | Slot positions (`topleft`, `center`, etc.) or `"x,y"` coordinates |
 | `stats` | No | All numeric values default to sensible baselines |
+| `effectiveMaterials` | `harvest` | Block materials the tool can mine; without it the tool mines nothing |
+| `harvestToolClass` | No | `pickaxe`, `axe`, `shovel`, … |
+| `aoeRange` | No | `[width, height, depth]`, defaults to `[1, 1, 1]` |
+| `ammo` | No | Ammo items for `bow`; defaults to vanilla arrows plus every `ammo`/`thrown` tool |
+| `crosshair` | No | `X`, `INVERSE`, `PLUS`, `T`, `SQUARE` (default) |
+| `projectile` | No | Projectile entity for `thrown` and `ammo`: `shuriken` (default), `arrow`, `bolt` |
+| `throwSpeed` | No | Launch speed for `thrown`, defaults to `2.1` |
+| `cooldown` | No | Ticks between throws for `thrown`, defaults to `4` |
+| `durabilityPerAmmo` | No | Durability per shot for `thrown` and `ammo`, defaults to `10` |
 
 ## Assets
 
-Models and textures follow the standard resource pack layout. Each tool requires:
+Paths below are relative to a namespace root: `assets/<namespace>/` inside a resource pack, or `resources/<namespace>/` when using Resource Loader. The namespace is the one in the tool's `id`, so `tinkersschema:pickaxe_axe` reads from `assets/tinkersschema/`.
 
-- `models/item/tools/<tool_name>.tcon.json` — layered tool model
-- `textures/items/tools/<tool_name>/<layer>.png` — grayscale layer textures (16×16)
-- `lang/<locale>.lang` — tool name and description
+| Path | Purpose |
+|---|---|
+| `models/item/tools/<tool_name>.tcon.json` | Layered tool model |
+| `models/item/tools/<tool_name>.mod.json` | Modifier overlay map (optional) |
+| `textures/items/tools/<tool_name>/<layer>.png` | Grayscale layer textures (16×16) |
+| `lang/<locale>.lang` | Tool name and description |
 
 Textures are grayscale; Tinkers' Construct applies material colors at render time.
 
+### Modifier Overlays
+
+Tinkers' Construct indexes its own modifier textures by tool name, and those tables only list the built-in tools, so a custom tool name never matches them. A `.mod.json` beside the tool model supplies the mapping for that tool — for `tinkersschema:pickaxe_axe` that is `assets/tinkersschema/models/item/tools/pickaxe_axe.mod.json`:
+
+```json
+{
+  "textures": {
+    "sharpness": "tconstruct:items/pickaxe/mod_sharpness",
+    "diamond": "tconstruct:items/pickaxe/mod_diamond"
+  }
+}
+```
+
+Keys are modifier identifiers; values are the overlay textures drawn on top of the tool model, so reuse the textures of the vanilla tool the model is based on to keep the UV layout aligned. Modifiers absent from the map render without an overlay, and the file is only read while the tool model bakes.
+
 ## Roadmap
 
-- **Phase 2**: Additional tool types (ranged weapons, thrown weapons, armor)
-- **Phase 3**: Custom tool part registration via JSON — currently only vanilla Tinkers' parts can be used
+- **Next**: Custom tool part registration via JSON — currently only vanilla Tinkers' parts can be used
+- Armor is not planned: Tinkers' Construct has no armor system on 1.12.2
 
 ## License
 

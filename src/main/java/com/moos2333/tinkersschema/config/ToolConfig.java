@@ -31,6 +31,11 @@ public class ToolConfig {
     private List<String> ammo;
     private String crosshair;
 
+    private String projectile;
+    private float throwSpeed = 2.1f;
+    private int cooldown = 4;
+    private int durabilityPerAmmo = 10;
+
     private StatsConfig stats = new StatsConfig();
 
     private transient ResourceLocation cachedLocation;
@@ -55,6 +60,11 @@ public class ToolConfig {
 
     public List<String> getAmmo() { return ammo; }
     public String getCrosshair() { return crosshair; }
+
+    public String getProjectile() { return projectile; }
+    public float getThrowSpeed() { return throwSpeed; }
+    public int getCooldown() { return cooldown; }
+    public int getDurabilityPerAmmo() { return durabilityPerAmmo; }
 
     public StatsConfig getStats() { return stats != null ? stats : DEFAULT_STATS; }
 

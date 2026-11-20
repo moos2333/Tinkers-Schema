@@ -24,13 +24,7 @@ public final class TraitApplier {
             0xFF5555, 0xFF55FF, 0xFFFF55, 0xFFFFFF
     };
 
-    private static boolean ready = false;
-
     private TraitApplier() {
-    }
-
-    public static void markReady() {
-        ready = true;
     }
 
     public static void apply(ToolConfig config, NBTTagCompound root) {
@@ -41,7 +35,7 @@ public final class TraitApplier {
             ITrait trait = resolve(name);
             if (trait != null) {
                 ToolBuilder.addTrait(root, trait, resolveColor(colors, name));
-            } else if (ready) {
+            } else {
                 TinkersSchema.LOGGER.warn("Unknown trait '{}' in tool '{}'", name, config.getId());
             }
         }
