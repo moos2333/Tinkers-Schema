@@ -45,6 +45,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerBookPages() {
+        if (DynamicToolRegister.getDynamicTools().isEmpty()) return;
         TinkerBook.INSTANCE.addRepository(new FileRepository(Tags.MOD_ID + ":book"));
     }
 }
