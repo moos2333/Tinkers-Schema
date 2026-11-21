@@ -33,11 +33,13 @@ public abstract class DynamicProjectile extends ProjectileCore implements Dynami
 
     private final ToolConfig config;
     private final int projectileKind;
+    private final int[] repairParts;
 
     protected DynamicProjectile(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
         this.config = config;
         this.projectileKind = resolveProjectile(config.getProjectile());
+        this.repairParts = DynamicTool.sanitizeRepairParts(config, DEFAULT_REPAIR_PARTS);
         setDurabilityPerAmmo(Math.max(1, config.getDurabilityPerAmmo()));
 
         setRegistryName(config.getResourceLocation());
@@ -61,7 +63,7 @@ public abstract class DynamicProjectile extends ProjectileCore implements Dynami
     public float damagePotential() { return config.getStats().getDamagePotential(); }
 
     @Override
-    public int[] getRepairParts() { return getRepairParts(DEFAULT_REPAIR_PARTS); }
+    public int[] getRepairParts() { return repairParts; }
 
     @Override
     public void addMaterialTraits(NBTTagCompound root, List<Material> materials) {

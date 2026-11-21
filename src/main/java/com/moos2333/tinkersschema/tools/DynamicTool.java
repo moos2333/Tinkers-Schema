@@ -5,6 +5,7 @@ import slimeknights.tconstruct.library.tinkering.Category;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,9 +30,18 @@ public interface DynamicTool {
 
     ToolConfig getConfig();
 
-    default int[] getRepairParts(int... defaultParts) {
-        int[] parts = getConfig().getRepairParts();
-        return parts != null ? parts : defaultParts;
+    static int[] sanitizeRepairParts(ToolConfig config, int[] fallback) {
+        int[] configured = config.getRepairParts();
+        int[] source = configured != null ? configured : fallback;
+        if (source.length == 0) return source;
+        int count = config.getParts().size();
+        int[] valid = new int[source.length];
+        int size = 0;
+        for (int index : source) {
+            if (index >= 0 && index < count) valid[size++] = index;
+        }
+        if (size == 0) return new int[]{0};
+        return size == source.length ? source : Arrays.copyOf(valid, size);
     }
 
     default float getRepairModifierForPart(int index) {

@@ -10,11 +10,15 @@ import java.util.List;
 
 public class DynamicSword extends SwordCore implements DynamicTool {
 
+    private static final int[] DEFAULT_REPAIR_PARTS = {1};
+
     private final ToolConfig config;
+    private final int[] repairParts;
 
     public DynamicSword(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
         this.config = config;
+        this.repairParts = DynamicTool.sanitizeRepairParts(config, DEFAULT_REPAIR_PARTS);
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
         addCategory(resolveCategories());
@@ -40,7 +44,7 @@ public class DynamicSword extends SwordCore implements DynamicTool {
 
     @Override
     public int[] getRepairParts() {
-        return getRepairParts(new int[]{1});
+        return repairParts;
     }
 
     @Override

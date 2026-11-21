@@ -19,14 +19,18 @@ import java.util.Set;
 
 public class DynamicAoeTool extends AoeToolCore implements DynamicTool {
 
+    private static final int[] DEFAULT_REPAIR_PARTS = {1};
+
     private final ToolConfig config;
     private final Set<net.minecraft.block.material.Material> effectiveMaterials;
     private final int[] aoeRange;
+    private final int[] repairParts;
 
     public DynamicAoeTool(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
         this.config = config;
         this.effectiveMaterials = MaterialResolver.resolve(config.getEffectiveMaterials());
+        this.repairParts = DynamicTool.sanitizeRepairParts(config, DEFAULT_REPAIR_PARTS);
 
         int[] range = config.getAoeRange();
         this.aoeRange = (range != null && range.length >= 3) ? range : new int[]{1, 1, 1};
@@ -69,7 +73,7 @@ public class DynamicAoeTool extends AoeToolCore implements DynamicTool {
 
     @Override
     public int[] getRepairParts() {
-        return getRepairParts(new int[]{1});
+        return repairParts;
     }
 
     @Override

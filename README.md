@@ -1,14 +1,14 @@
 # Tinkers' Schema
 
-A data-driven tool registration framework for **Tinkers' Construct 2** on Minecraft 1.12.2. Define custom melee weapons, harvest tools, bows, throwing weapons and ammo entirely through JSON — no Java code required.
+Tinkers' Schema is a data-driven tool registration framework for **Tinkers' Construct 2** on Minecraft 1.12.2. It registers custom melee weapons, harvest tools, bows, throwing weapons and ammo from JSON files, so no Java code is involved.
 
 ## What It Does
 
-- Registers new tools into the Tinkers' Construct tool system
-- Each tool is defined by a single JSON file in `config/tinkersschema/tools/`
-- Supports custom parts, stats, traits, GUI layouts, and crafting station routing (Tool Station / Tool Forge)
-- All tools behave as first-class Tinkers' items: craftable in the Tool Station, repairable, modifiable, and compatible with existing materials
-- Existing Tinkers' Construct content is never modified — the mod only adds new entries
+- Every tool the mod registers becomes a full member of the Tinkers' Construct tool system
+- A tool is defined by a single JSON file in `config/tinkersschema/tools/`
+- The JSON declares the tool's parts, stats, traits, GUI layout and crafting station (Tool Station or Tool Forge)
+- Each tool behaves as a first-class Tinkers' item: it is craftable in the Tool Station, repairable, modifiable, and compatible with existing materials
+- Existing Tinkers' Construct content is never modified; the mod only adds new entries
 
 ## Recommended Companions
 
@@ -123,7 +123,7 @@ Keys are modifier identifiers; values are the overlay textures drawn on top of t
 
 ## Roadmap
 
-- **Next**: Custom tool part registration via JSON — currently only vanilla Tinkers' parts can be used
+- **Next**: Custom tool parts will be registerable from JSON; currently only vanilla Tinkers' parts can be used
 - Armor is not planned: Tinkers' Construct has no armor system on 1.12.2
 
 ## License

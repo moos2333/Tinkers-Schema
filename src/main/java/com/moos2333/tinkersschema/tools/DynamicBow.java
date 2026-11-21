@@ -37,11 +37,14 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
     private static final int CROSSHAIR_PLUS = 3;
     private static final int CROSSHAIR_T = 4;
 
+    private static final int[] DEFAULT_REPAIR_PARTS = {0, 1};
+
     private final ToolConfig config;
     private final List<Item> ammoItems;
     private final Float drawMoveSpeed;
     private final float baseProjectileSpeed;
     private final int crosshairKind;
+    private final int[] repairParts;
 
     public DynamicBow(ToolConfig config) {
         super(PartTypeResolver.resolveAll(config.getParts()));
@@ -50,6 +53,7 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
         this.drawMoveSpeed = config.getStats().getDrawMoveSpeed();
         this.baseProjectileSpeed = 3.0f * config.getStats().getProjectileSpeedMultiplier();
         this.crosshairKind = resolveCrosshair(config.getCrosshair());
+        this.repairParts = DynamicTool.sanitizeRepairParts(config, DEFAULT_REPAIR_PARTS);
 
         setRegistryName(config.getResourceLocation());
         setTranslationKey(config.getTranslationKey());
@@ -126,7 +130,7 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
 
     @Override
     public int[] getRepairParts() {
-        return getRepairParts(new int[]{0, 1});
+        return repairParts;
     }
 
     @Override
