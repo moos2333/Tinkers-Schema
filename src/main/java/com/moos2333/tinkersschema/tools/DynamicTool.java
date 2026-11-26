@@ -45,9 +45,8 @@ public interface DynamicTool {
     }
 
     default float getRepairModifierForPart(int index) {
-        Float modifier = getConfig().getRepairModifiers() != null
-                ? getConfig().getRepairModifiers().get(String.valueOf(index))
-                : null;
+        Map<String, Float> modifiers = getConfig().getRepairModifiers();
+        Float modifier = modifiers != null ? modifiers.get(String.valueOf(index)) : null;
         return modifier != null ? modifier : getConfig().getStats().getRepairModifier();
     }
 

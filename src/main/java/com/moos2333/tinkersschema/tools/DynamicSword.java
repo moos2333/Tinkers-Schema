@@ -48,6 +48,11 @@ public class DynamicSword extends SwordCore implements DynamicTool {
     }
 
     @Override
+    public float getRepairModifierForPart(int index) {
+        return DynamicTool.super.getRepairModifierForPart(index);
+    }
+
+    @Override
     public void addMaterialTraits(NBTTagCompound root, List<Material> materials) {
         super.addMaterialTraits(root, materials);
         TraitApplier.apply(config, root);
@@ -55,7 +60,7 @@ public class DynamicSword extends SwordCore implements DynamicTool {
 
     @Override
     protected ToolNBT buildTagData(List<Material> materials) {
-        ToolNBT data = ToolNbtBuilder.build(config, materials);
+        ToolNBT data = ToolNbtBuilder.build(config.getStats(), requiredComponents, materials);
         applyModifiers(data);
         return data;
     }

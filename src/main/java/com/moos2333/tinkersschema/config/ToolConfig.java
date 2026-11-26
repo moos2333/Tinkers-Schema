@@ -81,7 +81,8 @@ public class ToolConfig {
     }
 
     public String getTranslationKey() {
-        return id.replace(':', '.');
+        ResourceLocation location = getResourceLocation();
+        return location.getNamespace() + "." + location.getPath();
     }
 
     public static class PartConfig {

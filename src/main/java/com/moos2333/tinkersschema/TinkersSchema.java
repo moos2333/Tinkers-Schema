@@ -32,6 +32,7 @@ public class TinkersSchema {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         ToolConfigLoader.load(event.getModConfigurationDirectory(), LOGGER);
+        proxy.loadResources(event.getModConfigurationDirectory());
     }
 
     @Mod.EventHandler

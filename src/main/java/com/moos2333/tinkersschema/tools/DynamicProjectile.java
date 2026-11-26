@@ -13,6 +13,7 @@ import slimeknights.tconstruct.library.materials.FletchingMaterialStats;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.tinkering.Category;
+import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tools.ProjectileNBT;
 import slimeknights.tconstruct.library.tools.ranged.ProjectileCore;
 import slimeknights.tconstruct.tools.common.entity.EntityArrow;
@@ -66,6 +67,11 @@ public abstract class DynamicProjectile extends ProjectileCore implements Dynami
     public int[] getRepairParts() { return repairParts; }
 
     @Override
+    public float getRepairModifierForPart(int index) {
+        return DynamicTool.super.getRepairModifierForPart(index);
+    }
+
+    @Override
     public void addMaterialTraits(NBTTagCompound root, List<Material> materials) {
         super.addMaterialTraits(root, materials);
         TraitApplier.apply(config, root);
@@ -78,21 +84,20 @@ public abstract class DynamicProjectile extends ProjectileCore implements Dynami
         List<FletchingMaterialStats> fletchings = new ArrayList<>();
         List<ExtraMaterialStats> extras = new ArrayList<>();
 
-        List<ToolConfig.PartConfig> parts = config.getParts();
-        int size = Math.min(parts.size(), materials.size());
+        int size = Math.min(requiredComponents.length, materials.size());
         for (int i = 0; i < size; i++) {
-            String type = parts.get(i).getType();
+            PartMaterialType part = requiredComponents[i];
             Material material = materials.get(i);
-            if (PartTypeResolver.usesStat(type, "head")) {
+            if (part.usesStat("head")) {
                 heads.add(material.getStatsOrUnknown("head"));
             }
-            if (PartTypeResolver.usesStat(type, "shaft")) {
+            if (part.usesStat("shaft")) {
                 shafts.add(material.getStatsOrUnknown("shaft"));
             }
-            if (PartTypeResolver.usesStat(type, "fletching")) {
+            if (part.usesStat("fletching")) {
                 fletchings.add(material.getStatsOrUnknown("fletching"));
             }
-            if (PartTypeResolver.usesStat(type, "extra")) {
+            if (part.usesStat("extra")) {
                 extras.add(material.getStatsOrUnknown("extra"));
             }
         }

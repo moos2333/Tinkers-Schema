@@ -5,6 +5,7 @@ import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
 import slimeknights.tconstruct.library.materials.HandleMaterialStats;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
+import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tools.ToolNBT;
 
 import java.util.ArrayList;
@@ -15,23 +16,22 @@ public final class ToolNbtBuilder {
     private ToolNbtBuilder() {
     }
 
-    public static ToolNBT build(ToolConfig config, List<Material> materials) {
+    public static ToolNBT build(ToolConfig.StatsConfig stats, PartMaterialType[] parts, List<Material> materials) {
         List<HeadMaterialStats> heads = new ArrayList<>();
         List<HandleMaterialStats> handles = new ArrayList<>();
         List<ExtraMaterialStats> extras = new ArrayList<>();
 
-        List<ToolConfig.PartConfig> parts = config.getParts();
-        int size = Math.min(parts.size(), materials.size());
+        int size = Math.min(parts.length, materials.size());
         for (int i = 0; i < size; i++) {
-            String type = parts.get(i).getType();
+            PartMaterialType part = parts[i];
             Material material = materials.get(i);
-            if (PartTypeResolver.usesStat(type, "head")) {
+            if (part.usesStat("head")) {
                 heads.add(material.getStatsOrUnknown("head"));
             }
-            if (PartTypeResolver.usesStat(type, "handle")) {
+            if (part.usesStat("handle")) {
                 handles.add(material.getStatsOrUnknown("handle"));
             }
-            if (PartTypeResolver.usesStat(type, "extra")) {
+            if (part.usesStat("extra")) {
                 extras.add(material.getStatsOrUnknown("extra"));
             }
         }
@@ -41,7 +41,6 @@ public final class ToolNbtBuilder {
         if (!extras.isEmpty())  data.extra(extras.toArray(new ExtraMaterialStats[0]));
         if (!handles.isEmpty()) data.handle(handles.toArray(new HandleMaterialStats[0]));
 
-        ToolConfig.StatsConfig stats = config.getStats();
         data.attack     *= stats.getAttackMultiplier();
         data.attack     += stats.getBonusAttack();
         data.durability *= stats.getDurabilityMultiplier();

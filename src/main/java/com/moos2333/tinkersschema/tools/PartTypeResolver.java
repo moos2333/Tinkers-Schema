@@ -39,34 +39,6 @@ public final class PartTypeResolver {
         return types;
     }
 
-    public static boolean usesStat(String type, String statId) {
-        if (type == null || type.isEmpty()) return false;
-        if (type.indexOf(',') < 0) {
-            String key = type.trim().toLowerCase(Locale.ROOT);
-            String[] predefined = TYPES.get(key);
-            if (predefined != null) {
-                for (String id : predefined) {
-                    if (id.equals(statId)) return true;
-                }
-                return false;
-            }
-            return key.equals(statId);
-        }
-        for (String raw : type.toLowerCase(Locale.ROOT).split(",")) {
-            String key = raw.trim();
-            if (key.isEmpty()) continue;
-            String[] predefined = TYPES.get(key);
-            if (predefined != null) {
-                for (String id : predefined) {
-                    if (id.equals(statId)) return true;
-                }
-            } else if (key.equals(statId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static PartMaterialType resolve(ToolConfig.PartConfig config) {
         String itemName = config.getItem();
         if (itemName == null) {

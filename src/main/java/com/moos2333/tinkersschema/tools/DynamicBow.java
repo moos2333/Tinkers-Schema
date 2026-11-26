@@ -21,6 +21,7 @@ import slimeknights.tconstruct.library.materials.BowStringMaterialStats;
 import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
+import slimeknights.tconstruct.library.tinkering.PartMaterialType;
 import slimeknights.tconstruct.library.tools.ProjectileLauncherNBT;
 import slimeknights.tconstruct.library.tools.ranged.BowCore;
 import slimeknights.tconstruct.library.tools.ranged.IAmmo;
@@ -134,6 +135,11 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
     }
 
     @Override
+    public float getRepairModifierForPart(int index) {
+        return DynamicTool.super.getRepairModifierForPart(index);
+    }
+
+    @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         if (drawMoveSpeed != null) {
             preventSlowDown(entityIn, drawMoveSpeed);
@@ -154,19 +160,18 @@ public class DynamicBow extends BowCore implements DynamicTool, ICustomCrosshair
         List<ExtraMaterialStats> extras = new ArrayList<>();
         List<BowStringMaterialStats> bowstrings = new ArrayList<>();
 
-        List<ToolConfig.PartConfig> parts = config.getParts();
-        int size = Math.min(parts.size(), materials.size());
+        int size = Math.min(requiredComponents.length, materials.size());
         for (int i = 0; i < size; i++) {
-            String type = parts.get(i).getType();
+            PartMaterialType part = requiredComponents[i];
             Material material = materials.get(i);
-            if (PartTypeResolver.usesStat(type, "bow")) {
+            if (part.usesStat("bow")) {
                 heads.add(material.getStatsOrUnknown("head"));
                 limbs.add(material.getStatsOrUnknown("bow"));
             }
-            if (PartTypeResolver.usesStat(type, "bowstring")) {
+            if (part.usesStat("bowstring")) {
                 bowstrings.add(material.getStatsOrUnknown("bowstring"));
             }
-            if (PartTypeResolver.usesStat(type, "extra")) {
+            if (part.usesStat("extra")) {
                 extras.add(material.getStatsOrUnknown("extra"));
             }
         }

@@ -14,7 +14,7 @@ Tinkers' Schema is a data-driven tool registration framework for **Tinkers' Cons
 
 | Mod | Purpose |
 |---|---|
-| [Resource Loader](https://www.curseforge.com/minecraft/mc-mods/resource-loader) | Load custom models, textures, and language files without packaging a resource pack |
+| [Resource Loader](https://www.curseforge.com/minecraft/mc-mods/resource-loader) | Optional. Only needed if you keep assets in `.minecraft/resources` instead of the config folder |
 
 ## Current Scope
 
@@ -32,13 +32,16 @@ Tinkers' Schema is a data-driven tool registration framework for **Tinkers' Cons
 .minecraft/
 ├── config/
 │   └── tinkersschema/
-│       └── tools/
-│           └── <tool_name>.json
+│       ├── tools/
+│       │   └── <tool_name>.json
+│       └── resources/
+│           └── assets/
+│               └── tinkersschema/
+│                   ├── lang/
+│                   ├── models/item/tools/
+│                   └── textures/items/tools/
 └── resources/
-    └── tinkersschema/
-        ├── lang/
-        ├── models/item/tools/
-        └── textures/items/tools/
+    └── tinkersschema/            (Resource Loader, optional)
 ```
 
 ## JSON Format
@@ -95,7 +98,9 @@ Tinkers' Schema is a data-driven tool registration framework for **Tinkers' Cons
 
 ## Assets
 
-Paths below are relative to a namespace root: `assets/<namespace>/` inside a resource pack, or `resources/<namespace>/` when using Resource Loader. The namespace is the one in the tool's `id`, so `tinkersschema:pickaxe_axe` reads from `assets/tinkersschema/`.
+Paths below are relative to a namespace root. The client mounts `config/tinkersschema/resources/` as a resource pack, so the namespace lives at `config/tinkersschema/resources/assets/<namespace>/`. A normal resource pack and Resource Loader's `resources/<namespace>/` layout keep working unchanged. The namespace is the one in the tool's `id`, so `tinkersschema:pickaxe_axe` reads from `assets/tinkersschema/`.
+
+The folder is mounted when the game starts, and it is optional: without it the mod asks for nothing and the assets come from packs as before. Add it before launching, or restart after you create it.
 
 | Path | Purpose |
 |---|---|

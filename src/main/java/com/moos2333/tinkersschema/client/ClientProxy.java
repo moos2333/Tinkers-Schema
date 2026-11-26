@@ -11,6 +11,7 @@ import slimeknights.tconstruct.library.book.TinkerBook;
 import slimeknights.tconstruct.library.client.ToolBuildGuiInfo;
 import slimeknights.tconstruct.library.tools.ToolCore;
 
+import java.io.File;
 import java.util.List;
 
 public class ClientProxy extends CommonProxy {
@@ -18,6 +19,11 @@ public class ClientProxy extends CommonProxy {
     private static final int[][] DEFAULT_SLOTS = {
             {12, 62}, {48, 26}, {30, 44}, {48, 62}, {12, 26}, {30, 26}
     };
+
+    @Override
+    public void loadResources(File configDir) {
+        ConfigResources.mount(configDir);
+    }
 
     @Override
     public void initToolGuis() {
